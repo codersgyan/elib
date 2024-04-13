@@ -5,6 +5,7 @@ import cloudinary from "../config/cloudinary";
 import createHttpError from "http-errors";
 import bookModel from "./bookModel";
 import { AuthRequest } from "../middlewares/authenticate";
+import mongoose from "mongoose";
 
 const createBook = async (req: Request, res: Response, next: NextFunction) => {
   const { title, genre } = req.body;
@@ -73,6 +74,9 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
   const { title, genre } = req.body;
   const bookId = req.params.bookId;
 
+  // Check if a valid bookId is passed in url params
+  if (!mongoose.isValidObjectId(bookId)) return next(createHttpError(400, "A valid bookid is required"));
+  
   const book = await bookModel.findOne({ _id: bookId });
 
   if (!book) {
