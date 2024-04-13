@@ -76,7 +76,7 @@ const updateBook = async (req: Request, res: Response, next: NextFunction) => {
 
   // Check if a valid bookId is passed in url params
   if (!mongoose.isValidObjectId(bookId)) return next(createHttpError(400, "A valid bookid is required"));
-  
+
   const book = await bookModel.findOne({ _id: bookId });
 
   if (!book) {
@@ -167,6 +167,9 @@ const getSingleBook = async (
 ) => {
   const bookId = req.params.bookId;
 
+  // Check if a valid bookId is passed in url params
+  if (!mongoose.isValidObjectId(bookId)) return next(createHttpError(400, "A valid bookid is required"));
+
   try {
     const book = await bookModel.findOne({ _id: bookId });
     if (!book) {
@@ -181,6 +184,9 @@ const getSingleBook = async (
 
 const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   const bookId = req.params.bookId;
+
+  // Check if a valid bookId is passed in url params
+  if (!mongoose.isValidObjectId(bookId)) return next(createHttpError(400, "A valid bookid is required"));
 
   const book = await bookModel.findOne({ _id: bookId });
   if (!book) {
