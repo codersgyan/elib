@@ -53,9 +53,14 @@ const createBook = async (req: Request, res: Response, next: NextFunction) => {
     });
 
     // Delete temp.files
-    // todo: wrap in try catch...
-    await fs.promises.unlink(filePath);
-    await fs.promises.unlink(bookFilePath);
+
+    try {
+      await fs.promises.unlink(filePath);
+      await fs.promises.unlink(bookFilePath);
+    } catch (error) {
+      console.log('Error while deleting local file', error);
+    }
+
 
     res.status(201).json({ id: newBook._id });
   } catch (err) {
@@ -193,13 +198,22 @@ const deleteBook = async (req: Request, res: Response, next: NextFunction) => {
   const bookFileSplits = book.file.split("/");
   const bookFilePublicId = bookFileSplits.at(-2) + "/" + bookFileSplits.at(-1);
   console.log("bookFilePublicId", bookFilePublicId);
-  // todo: add try error block
-  await cloudinary.uploader.destroy(coverImagePublicId);
-  await cloudinary.uploader.destroy(bookFilePublicId, {
-    resource_type: "raw",
-  });
 
-  await bookModel.deleteOne({ _id: bookId });
+  try {
+    await cloudinary.uploader.destroy(coverImagePublicId);
+    await cloudinary.uploader.destroy(bookFilePublicId, {
+      resource_type: "raw",
+    });
+  } catch (error) {
+    console.log('Error while deleting File from cloudinary', error);
+  }
+
+  try {
+    await bookModel.deleteOne({ _id: bookId });
+  } catch (error) {
+    console.log('Error while deleting a Book', error);
+  }
+
 
   return res.sendStatus(204);
 };
