@@ -1,0 +1,26 @@
+services:
+    mongosever:
+        image: mongo
+        container_name: mongodb-server
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=root
+            - MONGO_INITDB_ROOT_PASSWORD=root
+        volumes:
+            - ~/mongo/data:/data/db
+        networks:
+            - elib-network
+
+    backendapi:
+        image: codersgyan/elib-backend:v2
+        container_name: elib-backend-server
+        ports:
+            - "5513:5513"
+        networks:
+            - elib-network
+        env_file: .env
+        depends_on:
+            - mongosever
+
+networks:
+    elib-network:
+        driver: bridge

@@ -4,7 +4,9 @@
   "description": "This is a ebook api project",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon server.ts"
+    "dev": "nodemon server.ts",
+    "build": "tsc",
+    "docker:publish": "docker build -t codersgyan/elib-backend:v2 --platform linux/amd64 . && docker push codersgyan/elib-backend:v2"
   },
   "keywords": [
     "rest",
